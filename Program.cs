@@ -90,7 +90,7 @@ namespace Listas
             var contaRepository = kernel.Get<IContaRepository>();
             var contaService = kernel.Get<IContaService>();
             var movimentacaoService = kernel.Get<IMovimentacaoService>();
-            var formHandler = new Program(contaRepository,contaService,);
+            var formHandler = new Program(contaRepository,contaService,movimentacaoService);
             return formHandler;
         }
 
@@ -127,29 +127,11 @@ namespace Listas
                         Console.ReadKey();
                         break;
                     case "3":
-                        
+                        Sacar();
                         Console.ReadKey();
                         break;
                     case "4":
-                        MovimentacaoDeprec movimentacaoDepto = new MovimentacaoDeprec();
-                        Console.Clear();
-                        Console.WriteLine("=================== Depositar na Conta ===================");
-                        Console.WriteLine("Digite o ID da conta que deseja depositar o Dinheiro: ");
-                        string idContaDepto = Console.ReadLine();
-                        if (!ContaCorrenteDeprec.IDExiste(banco, idContaDepto))
-                            Console.WriteLine("Não existe nenhuma conta cadastrada com este ID!");
-                        else
-                        {
-                            Console.WriteLine("Digite o ID para movimentação: ");
-                            movimentacaoDepto.ID = Console.ReadLine();
-                            Console.WriteLine("Digite o valor que deseja depositar: ");
-                            movimentacaoDepto.Valor = decimal.Parse(Console.ReadLine());
-                            Console.WriteLine("Digite uma descrição para o saque: ");
-                            movimentacaoDepto.Descricao = Console.ReadLine();
-                            movimentacaoDepto.Tipo = MovimentacaoDeprec.TipoMovimentacao.Credito;
-                            banco.Movimentacao(idContaDepto, movimentacaoDepto);
-                            Console.WriteLine("R${0} depositado com sucesso!", movimentacaoDepto.Valor);
-                        }
+                        Depositar();
                         Console.ReadKey();
                         break;
                     case "5":
@@ -177,32 +159,14 @@ namespace Listas
                                 }
                                 else
                                 {
-                                    Console.WriteLine("Não foi possível fazer a transferencia.");
+                                    Console.WriteLine("Não foi possível fazer a transferencia. ");
                                 }
-
-
                             }
                         }
                         Console.ReadKey();
                         break;
                     case "6":
-                        Console.Clear();
-                        Console.WriteLine("===================  Saldo/Extrato ===================");
-                        Console.WriteLine("Digite o ID da conta que deseja tirar o extrato: ");
-                        string idContaExtrato = Console.ReadLine();
-                        if(!ContaCorrenteDeprec.IDExiste(banco, idContaExtrato))
-                            Console.WriteLine("Não existe nenhuma conta cadastrada com este ID!");
-                        else
-                        {
-                            decimal saldo = banco.GetSaldo(banco.GetConta(idContaExtrato));
-                            Console.WriteLine("Seu saldo atual é de R$ {0}", saldo);
-                            Console.WriteLine("Extrato: ");
-                            foreach(var mov in banco.GetConta(idContaExtrato).ListaMovimentacao)
-                            {
-                                Console.WriteLine("ID: {0}, Descrição: {1}, Valor: {2}, Tipo Movimentação: {3}", mov.ID, mov.Descricao, mov.Valor, mov.Tipo);
-                                Console.WriteLine("==============================================================");
-                            }
-                        }
+
                         Console.ReadKey();
                         break;
 
@@ -259,7 +223,6 @@ namespace Listas
         public static void Sacar()
         {
             var _conta = Config();
-            MovimentacaoDeprec movimentacao = new MovimentacaoDeprec();
             Console.Clear();
             Console.WriteLine("=================== Sacar da Conta ===================");
             Console.WriteLine("Digite o ID da conta que deseja sacar Dinheiro: ");
@@ -274,15 +237,59 @@ namespace Listas
                 decimal Valor = decimal.Parse(Console.ReadLine());
                 Console.WriteLine("Digite uma descrição para o saque: ");
                 string Descricao = Console.ReadLine();
-                movimentacao.Tipo = MovimentacaoDeprec.TipoMovimentacao.Debito;
-                if ( /*banco.ChecarSaldoLimite(idContaSaque, movimentacao)*/)
+                var Tipo = EnumTipoMovimentacao.Credito;
+                if (_conta._contaService.ChecarSaldoLimite(idContaSaque, _conta._movimentacaoService.CriarMovimentacao(idContaSaque, ID, Descricao, Valor, Tipo)) /*banco.ChecarSaldoLimite(idContaSaque, movimentacao)*/)
                 {
-                    banco.Movimentacao(idContaSaque, movimentacao);
-                    Console.WriteLine("R${0} depositado com sucesso!", movimentacao.Valor);
+                    _conta._contaService.Movimentacao(idContaSaque, _conta._movimentacaoService.CriarMovimentacao(idContaSaque, ID, Descricao, Valor, Tipo));
+                    Console.WriteLine("R${0} depositado com sucesso!", Valor);
                 }
                 else
                     Console.WriteLine("Limite Insuficiente!");
 
+            }
+        }
+
+        public static void Depositar()
+        {
+            var _conta = Config();
+            Console.Clear();
+            Console.WriteLine("=================== Depositar na Conta ===================");
+            Console.WriteLine("Digite o ID da conta que deseja depositar o Dinheiro: ");
+            string idContaDepto = Console.ReadLine();
+            if (_conta._contaRepository.IDExiste(idContaDepto))
+                Console.WriteLine("Não existe nenhuma conta cadastrada com este ID!");
+            else
+            {
+                Console.WriteLine("Digite o ID para movimentação: ");
+                string ID = Console.ReadLine();
+                Console.WriteLine("Digite o valor que deseja depositar: ");
+                decimal Valor = decimal.Parse(Console.ReadLine());
+                Console.WriteLine("Digite uma descrição para o saque: ");
+                string Descricao = Console.ReadLine();
+                var Tipo = EnumTipoMovimentacao.Credito;
+                _conta._contaService.Movimentacao(idContaDepto, _conta._movimentacaoService.CriarMovimentacao(idContaDepto, ID, Descricao, Valor, Tipo));
+                Console.WriteLine("R${0} depositado com sucesso!", Valor);
+            }
+        }
+
+        public static void SaldoExtrato()
+        {
+            Console.Clear();
+            Console.WriteLine("===================  Saldo/Extrato ===================");
+            Console.WriteLine("Digite o ID da conta que deseja tirar o extrato: ");
+            string idContaExtrato = Console.ReadLine();
+            if (!ContaCorrenteDeprec.IDExiste(banco, idContaExtrato))
+                Console.WriteLine("Não existe nenhuma conta cadastrada com este ID!");
+            else
+            {
+                decimal saldo = banco.GetSaldo(banco.GetConta(idContaExtrato));
+                Console.WriteLine("Seu saldo atual é de R$ {0}", saldo);
+                Console.WriteLine("Extrato: ");
+                foreach (var mov in banco.GetConta(idContaExtrato).ListaMovimentacao)
+                {
+                    Console.WriteLine("ID: {0}, Descrição: {1}, Valor: {2}, Tipo Movimentação: {3}", mov.ID, mov.Descricao, mov.Valor, mov.Tipo);
+                    Console.WriteLine("==============================================================");
+                }
             }
         }
 
