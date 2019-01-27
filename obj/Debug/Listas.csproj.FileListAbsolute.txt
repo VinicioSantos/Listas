@@ -1,0 +1,17 @@
+D:\Treinamento\CSHARP\Listas\Listas\bin\Debug\Listas.exe.config
+D:\Treinamento\CSHARP\Listas\Listas\bin\Debug\Listas.exe
+D:\Treinamento\CSHARP\Listas\Listas\bin\Debug\Listas.pdb
+D:\Treinamento\CSHARP\Listas\Listas\obj\Debug\Listas.csprojAssemblyReference.cache
+D:\Treinamento\CSHARP\Listas\Listas\obj\Debug\Listas.csproj.CoreCompileInputs.cache
+D:\Treinamento\CSHARP\Listas\Listas\obj\Debug\Listas.exe
+D:\Treinamento\CSHARP\Listas\Listas\obj\Debug\Listas.pdb
+C:\Users\Vinicio\source\repos\Listas\Listas\bin\Debug\Listas.exe.config
+C:\Users\Vinicio\source\repos\Listas\Listas\bin\Debug\Listas.exe
+C:\Users\Vinicio\source\repos\Listas\Listas\bin\Debug\Listas.pdb
+C:\Users\Vinicio\source\repos\Listas\Listas\obj\Debug\Listas.csprojAssemblyReference.cache
+C:\Users\Vinicio\source\repos\Listas\Listas\obj\Debug\Listas.csproj.CoreCompileInputs.cache
+C:\Users\Vinicio\source\repos\Listas\Listas\obj\Debug\Listas.exe
+C:\Users\Vinicio\source\repos\Listas\Listas\obj\Debug\Listas.pdb
+C:\Users\Vinicio\source\repos\Listas\Listas\bin\Debug\Ninject.dll
+C:\Users\Vinicio\source\repos\Listas\Listas\bin\Debug\Ninject.xml
+C:\Users\Vinicio\source\repos\Listas\Listas\obj\Debug\Listas.csproj.CopyComplete
